@@ -3,7 +3,7 @@ import { Field } from "@/components/ui/field";
 import { useState } from "react";
 import Image from "next/image";
 import axiosInstance from "@/config/axiosInstance";
-import { AuthResponse, ResErr, ResOk } from "@/models/Api";
+import { ResErr } from "@/models/Api";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 import { Toaster } from "@/components/ui/toaster";
@@ -18,11 +18,11 @@ const LoginPage = () => {
     event.preventDefault();
     try {
       toast.loading();
-      const { data } = await axiosInstance.post<ResOk<AuthResponse>>("/login", {
+      const { data } = await axiosInstance.post("/login", {
         email,
         password,
       });
-      Cookies.set("accessToken", data.data.accessToken);
+      Cookies.set("accessToken", data?.data?.accessToken);
       toast.success("Berhasil login");
       router.push("/dashboard");
     } catch (error) {

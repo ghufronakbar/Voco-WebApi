@@ -1,4 +1,3 @@
-import { User } from "@prisma/client";
 import { AxiosError, AxiosResponse } from "axios";
 
 export interface ResOk<T = undefined> {
@@ -9,8 +8,4 @@ export interface ResOk<T = undefined> {
 
 export interface ResErr extends AxiosError {
   response?: AxiosResponse<ResOk>;
-}
-
-export interface AuthResponse extends User {
-  accessToken: string;
 }
