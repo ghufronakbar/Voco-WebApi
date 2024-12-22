@@ -10,30 +10,35 @@ export default async function handler(
 ) {
   try {
     if (req.method === "POST") {
-      const { email, password } = req.body;
-      if (!email || !password) {
+      const { email, password, name } = req.body;
+      if (!email || !password || !name) {
         return res
           .status(400)
-          .json({ status: 400, message: "Harap isi email dan password" });
+          .json({ status: 400, message: "Harap lengkapi data" });
       }
       const admin = await prisma.admin.findUnique({ where: { email } });
-      if (!admin) {
+      if (admin) {
         return res
           .status(400)
-          .json({ status: 400, message: "Admin tidak ditemukan" });
+          .json({ status: 400, message: "Admin sudah terdaftar" });
       }
-      const check = await bcrypt.compare(password, admin.password);
-      if (!check) {
-        return res.status(401).json({ status: 401, message: "Password salah" });
-      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const create = await prisma.admin.create({
+        data: {
+          email,
+          password: hashedPassword,
+          name,
+        },
+      });
+
       const accessToken = jwt.sign(
-        { id: admin.id, role: "ADMIN" },
+        { id: create.id, role: "ADMIN" },
         JWT_SECRET!
       );
       return res.status(200).json({
         status: 200,
         message: "Berhasil login",
-        data: { ...admin, accessToken },
+        data: { ...create, accessToken },
       });
     }
   } catch (error) {

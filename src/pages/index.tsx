@@ -5,8 +5,8 @@ import { useRouter } from "next/router";
 export default function Home() {
   const router = useRouter();
   return (
-    <div className="w-full min-h-screen flex items-center justify-center">
-      <div className="fixed top-0 left-0 w-full h-full bg-neutral-100 z-0" />
+    <div className="w-full min-h-screen flex items-center justify-center relative">
+      <Image src="/bg.png" alt="" width={1920} height={1080} className="w-auto h-full fixed z-10 object-cover right-0" />      
       <Box
         className="flex items-center justify-center px-4 py-4 w-[90%] sm:w-[80%] md:w-[50%] lg:w-[60%] 2xl:w-[30%] max-w-[1000px] bg-white z-10"
         p={8}

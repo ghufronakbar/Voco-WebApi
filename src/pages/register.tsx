@@ -12,8 +12,10 @@ import Link from "next/link";
 import { InputGroup } from "@/components/ui/input-group";
 import { LuUsers } from "react-icons/lu";
 import { BiLock } from "react-icons/bi";
+import { PiIdentificationCardLight } from "react-icons/pi";
 
-const LoginPage = () => {
+const RegisterPage = () => {
+  const [name, setName] = useState(""); 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
@@ -22,12 +24,13 @@ const LoginPage = () => {
     event.preventDefault();
     try {
       toast.loading();
-      const { data } = await axiosInstance.post("/login", {
+      const { data } = await axiosInstance.post("/register", {
+        name,
         email,
         password,
       });
       Cookies.set("accessToken", data?.data?.accessToken);
-      toast.success("Berhasil login");
+      toast.success("Berhasil register");
       router.push("/dashboard");
     } catch (error) {
       const err = error as ResErr;
@@ -59,8 +62,21 @@ const LoginPage = () => {
               />
             </div>
             <h2 className="text-2xl md:text-3xl font-black text-primary self-center">
-              LOGIN
+              REGISTER
             </h2>
+            <Field label="Nama" className="text-black">
+              <InputGroup
+                flex="1"
+                startElement={<PiIdentificationCardLight />}
+                className="w-full"
+              >
+                <Input
+                  className="bg-neutral-100 px-2 text-black"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </InputGroup>
+            </Field>
             <Field label="Email" className="text-black">
               <InputGroup
                 flex="1"
@@ -75,20 +91,24 @@ const LoginPage = () => {
               </InputGroup>
             </Field>
             <Field label="Password" className="text-black">
-              <InputGroup flex="1" startElement={<BiLock />} className="w-full">
+              <InputGroup
+                flex="1"
+                startElement={<BiLock />}
+                className="w-full"
+              >
                 <Input
+                  type="password"
                   className="bg-neutral-100 px-2 text-black"
                   value={password}
-                  type="password"
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </InputGroup>
             </Field>
             <div className="text-sm">
-              Belum punya akun?{" "}
+              Sudah punya akun?{" "}
               <span>
-                <Link href="/register" className="text-primary">
-                  Register
+                <Link href="/login" className="text-primary">
+                  Login
                 </Link>
               </span>{" "}
             </div>
@@ -96,7 +116,7 @@ const LoginPage = () => {
               type="submit"
               className="w-full bg-primary text-white font-semibold"
             >
-              Login
+              Register
             </Button>
           </Stack>
         </form>
@@ -106,4 +126,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;

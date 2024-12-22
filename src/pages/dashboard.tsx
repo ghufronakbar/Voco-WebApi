@@ -13,8 +13,9 @@ import Image from "next/image";
 import { BiLogOutCircle } from "react-icons/bi";
 import Link from "next/link";
 import { Html5QrcodeScanner } from "html5-qrcode";
+import { FaBoxOpen } from "react-icons/fa";
+import { IoPerson } from "react-icons/io5";
 
-// Initialize product DTO
 const initProductDTO: ProductDTO = {
   brand: "",
   variant: "",
@@ -51,7 +52,7 @@ const DashboardPage = () => {
     }
   };
 
-  const [isCameraOpen, setIsCameraOpen] = useState(false);  
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
 
   useEffect(() => {
     let scanner: Html5QrcodeScanner;
@@ -185,176 +186,191 @@ const DashboardPage = () => {
   }, []);
 
   return (
-    <div className="w-full px-8 py-8">
-      <h1 className="text-3xl md:text-4xl font-semibold mb-4 flex flex-row items-center gap-2">
-        <Link href="/logout">
-          <BiLogOutCircle />
+    <div className="w-full h-full">
+      <div className="w-20 min-h-screen bg-primary fixed left-0 flex flex-col items-center py-12 gap-8">
+        <Link href="/dashboard">
+          <FaBoxOpen className="w-10 h-10 text-white" />
         </Link>
-        Dashboard
-      </h1>
-      <div className="w-full flex flex-col gap-2">
-        <div className="flex flex-col md:flex-row gap-2 justify-between">
-          <input
-            type="text"
-            placeholder="Cari produk..."
-            className="w-full md:w-1/2 lg:w-1/3 p-2 rounded-md border border-gray-300 bg-white"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <Button onClick={() => setIsOpen(true)}>Tambah Produk</Button>
-        </div>
-
-        <div className="overflow-x-auto bg-white rounded-lg shadow-lg">
-          <table className="min-w-full table-auto">
-            <thead className="text-white bg-primary">
-              <tr>
-                <th className="px-4 py-2 text-left"></th>
-                <th className="px-4 py-2 text-left"></th>
-                <th className="px-4 py-2 text-left">#ID</th>
-                <th className="px-4 py-2 text-left">Nama</th>
-                <th className="px-4 py-2 text-left">Kadaluarsa</th>
-                <th className="px-4 py-2 text-left">Dibuat Pada</th>
-                <th className="px-4 py-2 text-left"></th>
-              </tr>
-            </thead>
-            <tbody className="text-neutral-800">
-              {!loading && filteredData.length === 0 && (
-                <tr>
-                  <td colSpan={7}>
-                    <div className="w-full py-4 text-center">
-                      Data tidak ditemukan
-                    </div>
-                  </td>
-                </tr>
-              )}
-              {filteredData.map((item, index) => (
-                <tr key={item.id}>
-                  <td className="px-4 py-2">{index + 1}</td>
-                  <td className="px-4 py-2">
-                    <Image
-                      src={item?.image || "/placeholder.jpg"}
-                      alt={item.brand + " " + item.variant}
-                      width={50}
-                      height={50}
-                      className="w-16 h-16 object-cover rounded-lg min-w-16 min-h-16"
-                    />
-                  </td>
-                  <td className="px-4 py-2">{item.id}</td>
-                  <td className="px-4 py-2">
-                    <div className="flex flex-col">
-                      <p className="font-semibold">{item.brand}</p>
-                      <p className="text-sm">{item.variant}</p>
-                    </div>
-                  </td>
-                  <td className="px-4 py-2">{formatDate(item.expiredDate)}</td>
-                  <td className="px-4 py-2">{formatDate(item.createdAt)}</td>
-                  <td className="px-4 py-2">
-                    <button
-                      className="bg-white text-black px-4 py-2 rounded-md shadow-sm hover:bg-gray-100"
-                      onClick={() => {
-                        setSelectedId(item.id);
-                        setForm({
-                          brand: item.brand,
-                          variant: item.variant,
-                          expiredDate: new Date(item.expiredDate),
-                          qrCode: item.qrCode,
-                          desc: item.desc,
-                        });
-                        setIsOpen(true);
-                      }}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="bg-white text-red-500 px-4 py-2 rounded-md shadow-sm hover:bg-gray-100"
-                      onClick={() => {
-                        setSelectedToDelete(item.id);
-                      }}
-                    >
-                      Hapus
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <Link href="/account">
+          <IoPerson className="w-10 h-10 text-white" />
+        </Link>
+        <Link href="/logout">
+          <BiLogOutCircle className="w-10 h-10 text-white" />
+        </Link>
       </div>
-      <Toaster />
-
-      {/* Modal Action Form */}
-      <ModalAction
-        title={selectedId ? "Ubah Produk" : "Tambah Produk"}
-        isOpen={isOpen}
-        onConfirm={selectedId ? editProduct : createProduct}
-        onClose={() => {
-          setPickedImage(null);
-          setIsOpen(false);
-          setSelectedId(undefined);
-          setForm(initProductDTO);
-        }}
-      >
-        <div className="flex flex-col gap-4">
-          <label>Merek</label>
-          <input
-            type="text"
-            name="brand"
-            value={form.brand}
-            onChange={handleInputChange}
-            placeholder="Brand"
-            className="p-2 border rounded-md bg-neutral-50"
-          />
-          <label>Varian</label>
-          <input
-            type="text"
-            name="variant"
-            value={form.variant}
-            onChange={handleInputChange}
-            placeholder="Variant"
-            className="p-2 border rounded-md bg-neutral-50"
-          />
-          <div className="flex flex-row justify-between">
-            <label>Kode QR</label>
+      <div className="w-full pl-32 lg:pl-40 pr-8 py-8">
+        <h1 className="text-3xl md:text-4xl font-semibold mb-4 flex flex-row items-center gap-2">
+          Dashboard
+        </h1>
+        <div className="w-full flex flex-col gap-2">
+          <div className="flex flex-col md:flex-row gap-2 justify-between">
+            <input
+              type="text"
+              placeholder="Cari produk..."
+              className="w-full md:w-1/2 lg:w-1/3 p-2 rounded-md border border-gray-300 bg-white"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <Button onClick={() => setIsOpen(true)}>Tambah Produk</Button>
           </div>
-          <input
-            type="text"
-            name="qrCode"
-            value={form.qrCode}
-            onChange={handleInputChange}
-            placeholder="Kode QR"
-            disabled
-            className="p-2 border rounded-md bg-neutral-50"
-          />
-          <Button onClick={() => setIsCameraOpen(true)}>Buka Kamera</Button>
 
-          <label>Tanggal Kadaluarsa</label>
-          <input
-            type="date"
-            name="expiredDate"
-            value={form?.expiredDate?.toISOString()?.split("T")[0]}
-            onChange={handleDateChange}
-            className="p-2 border rounded-md bg-neutral-50"
-          />
-          <label>Deskripsi</label>
-          <textarea
-            name="desc"
-            value={form.desc}
-            onChange={handleInputChange}
-            placeholder="Deskripsi"
-            className="p-2 border rounded-md bg-neutral-50"
-          />
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            className="p-2 border rounded-md bg-neutral-50"
-          />
+          <div className="overflow-x-auto bg-white rounded-lg shadow-lg">
+            <table className="min-w-full table-auto">
+              <thead className="text-white bg-primary">
+                <tr>
+                  <th className="px-4 py-2 text-left"></th>
+                  <th className="px-4 py-2 text-left"></th>
+                  <th className="px-4 py-2 text-left">#ID</th>
+                  <th className="px-4 py-2 text-left">Nama</th>
+                  <th className="px-4 py-2 text-left">Kadaluarsa</th>
+                  <th className="px-4 py-2 text-left">Dibuat Pada</th>
+                  <th className="px-4 py-2 text-left"></th>
+                </tr>
+              </thead>
+              <tbody className="text-neutral-800">
+                {!loading && filteredData.length === 0 && (
+                  <tr>
+                    <td colSpan={7}>
+                      <div className="w-full py-4 text-center">
+                        Data tidak ditemukan
+                      </div>
+                    </td>
+                  </tr>
+                )}
+                {filteredData.map((item, index) => (
+                  <tr key={item.id}>
+                    <td className="px-4 py-2">{index + 1}</td>
+                    <td className="px-4 py-2">
+                      <Image
+                        src={item?.image || "/placeholder.jpg"}
+                        alt={item.brand + " " + item.variant}
+                        width={50}
+                        height={50}
+                        className="w-16 h-16 object-cover rounded-lg min-w-16 min-h-16"
+                      />
+                    </td>
+                    <td className="px-4 py-2">{item.id}</td>
+                    <td className="px-4 py-2">
+                      <div className="flex flex-col">
+                        <p className="font-semibold">{item.brand}</p>
+                        <p className="text-sm">{item.variant}</p>
+                      </div>
+                    </td>
+                    <td className="px-4 py-2">
+                      {formatDate(item.expiredDate)}
+                    </td>
+                    <td className="px-4 py-2">{formatDate(item.createdAt)}</td>
+                    <td className="px-4 py-2">
+                      <button
+                        className="bg-white text-black px-4 py-2 rounded-md shadow-sm hover:bg-gray-100"
+                        onClick={() => {
+                          setSelectedId(item.id);
+                          setForm({
+                            brand: item.brand,
+                            variant: item.variant,
+                            expiredDate: new Date(item.expiredDate),
+                            qrCode: item.qrCode,
+                            desc: item.desc,
+                          });
+                          setIsOpen(true);
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="bg-white text-red-500 px-4 py-2 rounded-md shadow-sm hover:bg-gray-100"
+                        onClick={() => {
+                          setSelectedToDelete(item.id);
+                        }}
+                      >
+                        Hapus
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </ModalAction>
+        <Toaster />
 
-      {/* Camera Modal */}
-      
-        <div className={`modal fixed inset-0 bg-gray-800 bg-opacity-75 items-center justify-center z-50 ${isCameraOpen ? "flex" : "hidden"}`}>
+        {/* Modal Action Form */}
+        <ModalAction
+          title={selectedId ? "Ubah Produk" : "Tambah Produk"}
+          isOpen={isOpen}
+          onConfirm={selectedId ? editProduct : createProduct}
+          onClose={() => {
+            setPickedImage(null);
+            setIsOpen(false);
+            setSelectedId(undefined);
+            setForm(initProductDTO);
+          }}
+        >
+          <div className="flex flex-col gap-4">
+            <label>Merek</label>
+            <input
+              type="text"
+              name="brand"
+              value={form.brand}
+              onChange={handleInputChange}
+              placeholder="Brand"
+              className="p-2 border rounded-md bg-neutral-50"
+            />
+            <label>Varian</label>
+            <input
+              type="text"
+              name="variant"
+              value={form.variant}
+              onChange={handleInputChange}
+              placeholder="Variant"
+              className="p-2 border rounded-md bg-neutral-50"
+            />
+            <div className="flex flex-row justify-between">
+              <label>Kode QR</label>
+            </div>
+            <input
+              type="text"
+              name="qrCode"
+              value={form.qrCode}
+              onChange={handleInputChange}
+              placeholder="Kode QR"
+              disabled
+              className="p-2 border rounded-md bg-neutral-50"
+            />
+            <Button onClick={() => setIsCameraOpen(true)}>Buka Kamera</Button>
+
+            <label>Tanggal Kadaluarsa</label>
+            <input
+              type="date"
+              name="expiredDate"
+              value={form?.expiredDate?.toISOString()?.split("T")[0]}
+              onChange={handleDateChange}
+              className="p-2 border rounded-md bg-neutral-50"
+            />
+            <label>Deskripsi</label>
+            <textarea
+              name="desc"
+              value={form.desc}
+              onChange={handleInputChange}
+              placeholder="Deskripsi"
+              className="p-2 border rounded-md bg-neutral-50"
+            />
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="p-2 border rounded-md bg-neutral-50"
+            />
+          </div>
+        </ModalAction>
+
+        {/* Camera Modal */}
+
+        <div
+          className={`modal fixed inset-0 bg-gray-800 bg-opacity-75 items-center justify-center z-50 ${
+            isCameraOpen ? "flex" : "hidden"
+          }`}
+        >
           <div className="bg-white p-4 rounded-lg">
             <div id="reader"></div>
             <button
@@ -365,15 +381,15 @@ const DashboardPage = () => {
             </button>
           </div>
         </div>
-      
 
-      {/* Modal Confirmation */}
-      <ModalConfirmation
-        isOpen={!!selectedToDelete}
-        onClose={() => setSelectedToDelete(undefined)}
-        onConfirm={deleteProduct}
-        message="Apakah Anda yakin ingin menghapus produk ini?"
-      />
+        {/* Modal Confirmation */}
+        <ModalConfirmation
+          isOpen={!!selectedToDelete}
+          onClose={() => setSelectedToDelete(undefined)}
+          onConfirm={deleteProduct}
+          message="Apakah Anda yakin ingin menghapus produk ini?"
+        />
+      </div>
     </div>
   );
 };
